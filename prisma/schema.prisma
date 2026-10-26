@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Asset {
+  id           String   @id @default(uuid())
+  tag          String   @unique 
+  name         String   
+  category     String
+  location     String
+  status       String   @default("Active") 
+  manufacturer String
+  model        String
+  serialNumber String?
+  purchaseDate DateTime?
+  purchaseCost Float?
+  openWOs      Int      @default(0)
+  
+  parts        Part[]   
+  operators    Operator[] 
+}
+
+model Part {
+  id           String  @id @default(uuid())
+  tag          String  @unique 
+  name         String
+  category     String
+  qtyOnHand    Int
+  minQty       Int
+  unitCost     Float
+  location     String
+  
+  compatibleMachines Asset[]
+}
+
+model Checklist {
+  id          String   @id @default(uuid())
+  title       String
+  frequency   String   
+  targetAsset String?  
+  items       String   
+}
+
+model Operator {
+  id        String  @id @default(uuid())
+  badgeId   String  @unique 
+  name      String
+  role      String  
+  shift     String  
+  
+  assets    Asset[]
